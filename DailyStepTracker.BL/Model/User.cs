@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DailyStepTracker.BL.Model
 {
-    internal class User
+    public class User
     {
         #region Свойства
         public string Name { get; }
@@ -40,12 +40,15 @@ namespace DailyStepTracker.BL.Model
                 throw new ArgumentNullException("Рост не может быть меньше или равен нулю!", nameof(height));
             }
             #endregion
-
             Name = name;
             Gender = gender;
             Birthday = birthday;
             Weight = weight;
             Height = height;
+        }
+        public User()
+        {
+
         }
         public override string ToString()
         {
