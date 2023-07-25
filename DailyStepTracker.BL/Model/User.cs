@@ -16,13 +16,9 @@ namespace DailyStepTracker.BL.Model
         public int Weight { get; }
         public int Height { get; }
         #endregion
-        public User(string name, Gender gender, DateTime birthday, int weight, int height)
+        public User(string name, Gender? gender, DateTime birthday, int weight, int height) : this(name)
         {
             #region Проверки входных параметров
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentNullException("Имя не может быть пустым!", nameof(name));
-            }
             if (gender == null)
             {
                 throw new ArgumentNullException("Пол не может быть пустым!", nameof(gender));
@@ -40,11 +36,18 @@ namespace DailyStepTracker.BL.Model
                 throw new ArgumentNullException("Рост не может быть меньше или равен нулю!", nameof(height));
             }
             #endregion
-            Name = name;
             Gender = gender;
             Birthday = birthday;
             Weight = weight;
             Height = height;
+        }
+        public User(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentNullException("Имя не может быть пустым!", nameof(name));
+            }
+            Name = name;
         }
         public User()
         {
