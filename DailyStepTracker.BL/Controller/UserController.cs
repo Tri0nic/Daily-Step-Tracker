@@ -6,53 +6,100 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DailyStepTracker.BL.Controller
 {
     public class UserController
     {
+        
+        public List<User> Users { get; }
         public User User { get; }
+        public bool IsNewUser { get; }
+
         /// <summary>
-        /// Создание пользователя через десериализацию JSON
+        /// Создание пользователя через список List<User> после десериализации
         /// </summary>
-        public UserController()
+        /// <param name="userName">Имя</param>
+        public UserController(string userName)
         {
-            // Десериализация JSON файла
-            using (var file = new StreamReader("UsersData.json"))
+            
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                string jsonData = file.ReadToEnd();
-                User = JsonSerializer.Deserialize<User>(jsonData);
+                throw new ArgumentNullException("Имя не может быть пустым!", nameof(userName));
             }
-        }
-        /// <summary>
-        /// Создание пользователя
-        /// </summary>
-        /// <param name="name">Имя</param>
-        /// <param name="genderString">Пол</param>
-        /// <param name="birthday">День рождения</param>
-        /// <param name="weight">Вес</param>
-        /// <param name="height">Рост</param>
-        public UserController(string name, string genderString, DateTime birthday, int weight, int height)
-        {
-            Gender gender = new Gender(genderString);
-            User user = new User(name, gender, birthday, weight, height);
-            if (user == null)
+            Users = GetUsers(); // Десериализуем
+            User? User = (from item in Users            // Ищем пользователя по имени в списке пользователей
+                         where item.Name == userName
+                         select item).SingleOrDefault();
+
+            if (User == null) // Если имени пользователя нет в файле JSON, то добавляем его
             {
-                throw new ArgumentNullException("Пользователь не может быть пустым!", nameof(user));
+                this.User = new User(userName);
+                Users.Add(this.User);
+                IsNewUser = true;
+                Save();
             }
-            User = user;
+            else
+            {
+                this.User = User;
+            }
         }
 
         /// <summary>
-        /// Сохранение пользователя в JSON
+        /// Заполнение свойств нового пользователя
         /// </summary>
-        public void Save()
+        /// <param name="genderStr">Пол</param>
+        /// <param name="birthday">Дата рождения</param>
+        /// <param name="weight">Вес</param>
+        /// <param name="height">Рост</param>
+        public void MakeNewUser(string genderStr, DateTime birthday, int weight, int height)
+        {
+            // TODO: Проверка
+            User.Gender = new Gender(genderStr);
+            User.Birthday = birthday;
+            User.Weight = weight;
+            User.Height = height;
+            Save();
+        }
+
+        /// <summary>
+        /// Получение списка пользователей из файла
+        /// </summary>
+        /// <returns>Список пользователей</returns>
+        private List<User> GetUsers()
+        {
+            // Если файл UsersData создан и содержит List<User>, то десериализуем его и возвращаем
+            // Если нет, то возвращаем пустой список 
+            using (var file = new StreamReader("UsersData.json"))
+            {
+                string jsonData = file.ReadToEnd();
+            
+                if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
+                {
+                    return new List<User>();
+                }
+                if (JsonSerializer.Deserialize<List<User>>(jsonData) is List<User> users)
+                {
+                    return users;
+                }
+                else 
+                {
+                    return new List<User>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Сохранение пользователей в JSON
+        /// </summary>
+        private void Save()
         {
             // Для удобного чтения JSON
             JsonSerializerOptions options = new JsonSerializerOptions();
             options.WriteIndented = true;
             // Сериализуем в JSON
-            string jsonString = JsonSerializer.Serialize(User, options);
+            string jsonString = JsonSerializer.Serialize(Users, options);
             // Записываем JSON в файл 
             // false позволяет записывать данные в файл, и файл будет создан, если он не существует
             using (var file = new StreamWriter("UsersData.json", false))
