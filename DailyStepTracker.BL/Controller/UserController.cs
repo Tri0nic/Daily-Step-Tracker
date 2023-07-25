@@ -15,10 +15,12 @@ namespace DailyStepTracker.BL.Controller
         
         public List<User> Users { get; }
         public User User { get; }
+        public bool IsNewUser { get; }
 
         /// <summary>
         /// Создание пользователя через список List<User> после десериализации
         /// </summary>
+        /// <param name="userName">Имя</param>
         public UserController(string userName)
         {
             
@@ -30,18 +32,36 @@ namespace DailyStepTracker.BL.Controller
             User? User = (from item in Users            // Ищем пользователя по имени в списке пользователей
                          where item.Name == userName
                          select item).SingleOrDefault();
-            // TODO: если пользователь не найден, то создаем нового пользователя,
-            // т.е. запрашиваем ввод остальных параметров пользователя
-            // т.е. нужно засунуть сюда второй конструктор: Создание пользователя через консоль
-            if (User == null)
+
+            if (User == null) // Если имени пользователя нет в файле JSON, то добавляем его
             {
-                User = new User(userName);
-                Users.Add(User);
+                this.User = new User(userName);
+                Users.Add(this.User);
+                IsNewUser = true;
                 Save();
             }
-        
+            else
+            {
+                this.User = User;
+            }
         }
 
+        /// <summary>
+        /// Заполнение свойств нового пользователя
+        /// </summary>
+        /// <param name="genderStr">Пол</param>
+        /// <param name="birthday">Дата рождения</param>
+        /// <param name="weight">Вес</param>
+        /// <param name="height">Рост</param>
+        public void MakeNewUser(string genderStr, DateTime birthday, int weight, int height)
+        {
+            // TODO: Проверка
+            User.Gender = new Gender(genderStr);
+            User.Birthday = birthday;
+            User.Weight = weight;
+            User.Height = height;
+            Save();
+        }
 
         /// <summary>
         /// Получение списка пользователей из файла
@@ -59,7 +79,6 @@ namespace DailyStepTracker.BL.Controller
                 {
                     return new List<User>();
                 }
-                var a = JsonSerializer.Deserialize<List<User>>(jsonData);
                 if (JsonSerializer.Deserialize<List<User>>(jsonData) is List<User> users)
                 {
                     return users;
@@ -70,27 +89,6 @@ namespace DailyStepTracker.BL.Controller
                 }
             }
         }
-
-
-        /// <summary>
-        /// Создание пользователя через консоль
-        /// </summary>
-        /// <param name="name">Имя</param>
-        /// <param name="genderString">Пол</param>
-        /// <param name="birthday">День рождения</param>
-        /// <param name="weight">Вес</param>
-        /// <param name="height">Рост</param>
-        //public UserController(string name, string genderString, DateTime birthday, int weight, int height)
-        //{
-        //    Gender gender = new Gender(genderString);
-        //    User user = new User(name, gender, birthday, weight, height);
-        //    if (user == null)
-        //    {
-        //        throw new ArgumentNullException("Пользователь не может быть пустым!", nameof(user));
-        //    }
-        //    User = user;
-        //}
-
 
         /// <summary>
         /// Сохранение пользователей в JSON

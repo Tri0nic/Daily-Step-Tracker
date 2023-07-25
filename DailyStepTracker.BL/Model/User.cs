@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DailyStepTracker.BL.Model
@@ -11,10 +12,10 @@ namespace DailyStepTracker.BL.Model
     {
         #region Свойства
         public string Name { get; }
-        public Gender Gender { get; }
-        public DateTime Birthday { get; }
-        public int Weight { get; }
-        public int Height { get; }
+        public Gender Gender { get; set; }
+        public DateTime Birthday { get; set; }
+        public int Weight { get; set; }
+        public int Height { get; set; }
         #endregion
         public User(string name, Gender? gender, DateTime birthday, int weight, int height) : this(name)
         {
@@ -41,6 +42,7 @@ namespace DailyStepTracker.BL.Model
             Weight = weight;
             Height = height;
         }
+        [JsonConstructor]
         public User(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -48,10 +50,6 @@ namespace DailyStepTracker.BL.Model
                 throw new ArgumentNullException("Имя не может быть пустым!", nameof(name));
             }
             Name = name;
-        }
-        public User()
-        {
-
         }
         public override string ToString()
         {
