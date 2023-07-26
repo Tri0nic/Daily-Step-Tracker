@@ -69,24 +69,31 @@ namespace DailyStepTracker.BL.Controller
         /// <returns>Список пользователей</returns>
         private List<User> GetUsers()
         {
-            // Если файл UsersData создан и содержит List<User>, то десериализуем его и возвращаем
-            // Если нет, то возвращаем пустой список 
-            using (var file = new StreamReader("UsersData.json"))
+            try
             {
-                string jsonData = file.ReadToEnd();
-            
-                if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
+                // Если файл UsersData создан и содержит List<User>, то десериализуем его и возвращаем
+                // Если нет, то возвращаем пустой список 
+                using (var file = new StreamReader("UsersData.json"))
                 {
-                    return new List<User>();
+                    string jsonData = file.ReadToEnd();
+
+                    if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
+                    {
+                        return new List<User>();
+                    }
+                    if (JsonSerializer.Deserialize<List<User>>(jsonData) is List<User> users)
+                    {
+                        return users;
+                    }
+                    else
+                    {
+                        return new List<User>();
+                    }
                 }
-                if (JsonSerializer.Deserialize<List<User>>(jsonData) is List<User> users)
-                {
-                    return users;
-                }
-                else 
-                {
-                    return new List<User>();
-                }
+            }
+            catch(System.IO.FileNotFoundException) // Если файла не существует
+            {
+                return new List<User>();
             }
         }
 

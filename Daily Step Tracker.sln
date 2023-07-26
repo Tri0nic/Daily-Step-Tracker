@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyStepTracker.BL", "DailyStepTracker.BL\DailyStepTracker.BL.csproj", "{F0B3DA15-6DF6-4AF0-8A00-4E55CF7B9D05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyStepTracker.BL", "DailyStepTracker.BL\DailyStepTracker.BL.csproj", "{F0B3DA15-6DF6-4AF0-8A00-4E55CF7B9D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyStepTracker.CMD", "DailyStepTracker.CMD\DailyStepTracker.CMD.csproj", "{F706AAF5-256E-4913-BA47-7ECE24C0706A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DailyStepTracker.CMD", "DailyStepTracker.CMD\DailyStepTracker.CMD.csproj", "{F706AAF5-256E-4913-BA47-7ECE24C0706A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyStepTracker.BLTests", "DailyStepTracker.BLTests\DailyStepTracker.BLTests.csproj", "{61381E4F-EB38-4C3E-8877-8C77E35FE73E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{F706AAF5-256E-4913-BA47-7ECE24C0706A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F706AAF5-256E-4913-BA47-7ECE24C0706A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F706AAF5-256E-4913-BA47-7ECE24C0706A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61381E4F-EB38-4C3E-8877-8C77E35FE73E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61381E4F-EB38-4C3E-8877-8C77E35FE73E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61381E4F-EB38-4C3E-8877-8C77E35FE73E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61381E4F-EB38-4C3E-8877-8C77E35FE73E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
