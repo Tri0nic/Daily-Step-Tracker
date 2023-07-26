@@ -1,11 +1,18 @@
 ﻿using DailyStepTracker.BL.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace DailyStepTracker.BL.Controller
 {
-    public class UserController : BaseController
+    public class UserController
     {
-
+        
         public List<User> Users { get; }
         public User User { get; }
         public bool IsNewUser { get; }
@@ -16,15 +23,15 @@ namespace DailyStepTracker.BL.Controller
         /// <param name="userName">Имя</param>
         public UserController(string userName)
         {
-
+            
             if (string.IsNullOrWhiteSpace(userName))
             {
                 throw new ArgumentNullException("Имя не может быть пустым!", nameof(userName));
             }
             Users = GetUsers(); // Десериализуем
             User? User = (from item in Users            // Ищем пользователя по имени в списке пользователей
-                          where item.Name == userName
-                          select item).SingleOrDefault();
+                         where item.Name == userName
+                         select item).SingleOrDefault();
 
             if (User == null) // Если имени пользователя нет в файле JSON, то добавляем его
             {
@@ -62,14 +69,50 @@ namespace DailyStepTracker.BL.Controller
         /// <returns>Список пользователей</returns>
         private List<User> GetUsers()
         {
-            return GetUsers<List<User>>("UsersData.json");
+            try
+            {
+                // Если файл UsersData создан и содержит List<User>, то десериализуем его и возвращаем
+                // Если нет, то возвращаем пустой список 
+                using (var file = new StreamReader("UsersData.json"))
+                {
+                    string jsonData = file.ReadToEnd();
+
+                    if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
+                    {
+                        return new List<User>();
+                    }
+                    if (JsonSerializer.Deserialize<List<User>>(jsonData) is List<User> users)
+                    {
+                        return users;
+                    }
+                    else
+                    {
+                        return new List<User>();
+                    }
+                }
+            }
+            catch(System.IO.FileNotFoundException) // Если файла не существует
+            {
+                return new List<User>();
+            }
         }
+
         /// <summary>
         /// Сохранение пользователей в JSON
         /// </summary>
         private void Save()
         {
-            Save("UsersData.json", Users);
+            // Для удобного чтения JSON
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.WriteIndented = true;
+            // Сериализуем в JSON
+            string jsonString = JsonSerializer.Serialize(Users, options);
+            // Записываем JSON в файл 
+            // false позволяет записывать данные в файл, и файл будет создан, если он не существует
+            using (var file = new StreamWriter("UsersData.json", false))
+            {
+                file.Write(jsonString);
+            }
         }
     }
 }
