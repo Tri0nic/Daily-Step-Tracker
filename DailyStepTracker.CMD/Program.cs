@@ -13,7 +13,7 @@ class Program
             Console.WriteLine("Введите пол:");
             string gender = Console.ReadLine();
 
-            Console.WriteLine("Введите дату рождения в формате DD:MM:YYYY");
+            Console.WriteLine("Введите дату рождения в формате DD.MM.YYYY");
             string birthdayString;
             DateTime birthday;
             do
