@@ -30,6 +30,17 @@ namespace DailyStepTracker.BL.Controller
         /// Список приемов пищи
         /// </summary>
         public Eating Eating { get; }
+        public EatingController(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("Пользователь не может быть пустым!", nameof(user));
+            }
+            User = user;
+            Foods = GetFood();
+            Eating = GetEating();
+            Save();
+        }
         /// <summary>
         /// Добавление еды в прием пищи
         /// </summary>
@@ -52,17 +63,6 @@ namespace DailyStepTracker.BL.Controller
                 Save();
             }
         }
-        public EatingController(User user)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException("Пользователь не может быть пустым!", nameof(user));
-            }
-            User = user;
-            Foods = GetFood();
-            Eating = GetEating();
-            Save();
-        }
         public List<Food> GetFood()
         {
             return GetItems<List<Food>>(FoodFileName) ?? new List<Food>();
@@ -71,25 +71,33 @@ namespace DailyStepTracker.BL.Controller
         {
             // Десериализации Eating и его свойства Products
             Dictionary<Food, int> productsDeserialized;
-            using (var file = new StreamReader(ProductsFileName))
+            Eating eating;
+            try
             {
-                string jsonData = file.ReadToEnd();
-            
-                if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
+                using (var file = new StreamReader(ProductsFileName))
                 {
-                    productsDeserialized = new Dictionary<Food, int>();
-                }
-                // Десериализация словаря с пользовательским классом с помощью List
-                else if (JsonConvert.DeserializeObject<List<KeyValuePair<Food, int>>>(jsonData).ToDictionary(kv => kv.Key, kv => kv.Value) is Dictionary<Food, int> foodDict)
-                {
-                    productsDeserialized = foodDict;
-                }
-                else
-                {
-                    productsDeserialized = new Dictionary<Food, int>();
+                    string jsonData = file.ReadToEnd();
+
+                    if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
+                    {
+                        productsDeserialized = new Dictionary<Food, int>();
+                    }
+                    // Десериализация словаря с пользовательским классом с помощью List
+                    else if (JsonConvert.DeserializeObject<List<KeyValuePair<Food, int>>>(jsonData).ToDictionary(kv => kv.Key, kv => kv.Value) is Dictionary<Food, int> foodDict)
+                    {
+                        productsDeserialized = foodDict;
+                    }
+                    else
+                    {
+                        productsDeserialized = new Dictionary<Food, int>();
+                    }
                 }
             }
-            Eating eating;
+            catch (System.IO.FileNotFoundException) // Если файла не существует
+            {
+                productsDeserialized = new Dictionary<Food, int>();
+            }
+
             try
             {
                 using (var file = new StreamReader(EatingFileName))
