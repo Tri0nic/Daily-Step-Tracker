@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using DailyStepTracker.BL.Controller;
 
 namespace DailyStepTracker.BL.Model
 {
     /// <summary>
     /// Прием пищи
     /// </summary>
-    public class Eating
+    internal class Eating
     {
         #region Свойства
         /// <summary>
@@ -22,15 +20,12 @@ namespace DailyStepTracker.BL.Model
         /// <summary>
         /// Продукты
         /// </summary>
-        [JsonIgnore]
-        public Dictionary<Food, int> Products { get; set; }
+        public Dictionary<Food, int> Products { get; }
         /// <summary>
         /// Пользователь
         /// </summary>
         public User User { get; }
         #endregion
-        [Newtonsoft.Json.JsonConstructor]
-        [System.Text.Json.Serialization.JsonConstructor]
         public Eating(User user) 
         {
             if (user == null)
@@ -57,7 +52,7 @@ namespace DailyStepTracker.BL.Model
             }
             else
             {
-                Products[product] += weight;
+                Products[food] += weight;
             }
         }
     }

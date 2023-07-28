@@ -1,14 +1,12 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DailyStepTracker.BL.Model
 {
-    public class Food
+    internal class Food
     {
         #region Свойства
         /// <summary>
@@ -32,10 +30,6 @@ namespace DailyStepTracker.BL.Model
         /// </summary>
         public double Calories { get; }
         #endregion
-        
-        public Food(string name) : this(name, 0, 0, 0, 0) { }
-        [Newtonsoft.Json.JsonConstructor]
-        [System.Text.Json.Serialization.JsonConstructor]
         public Food(string name, double fats, double proteins, double carbohydrates, double calories)
         {
             // TODO: ПРОВЕРКА
@@ -44,10 +38,6 @@ namespace DailyStepTracker.BL.Model
             Proteins = proteins;
             Carbohydrates = carbohydrates;
             Calories = calories;
-        }
-        public override string ToString()
-        {
-            return Name;
         }
     }
 }

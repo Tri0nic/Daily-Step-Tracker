@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,8 +33,7 @@ namespace DailyStepTracker.BL.Model
         #endregion
         
         public Food(string name) : this(name, 0, 0, 0, 0) { }
-        [Newtonsoft.Json.JsonConstructor]
-        [System.Text.Json.Serialization.JsonConstructor]
+        [JsonConstructor]
         public Food(string name, double fats, double proteins, double carbohydrates, double calories)
         {
             // TODO: ПРОВЕРКА

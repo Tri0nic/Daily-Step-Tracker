@@ -69,7 +69,7 @@ namespace DailyStepTracker.BL.Controller
         }
         public Eating GetEating()
         {
-            // Десериализации Eating и его свойства Products
+            // десериализации Eating и его свойства Products
             Dictionary<Food, int> productsDeserialized;
             using (var file = new StreamReader(ProductsFileName))
             {
@@ -103,7 +103,7 @@ namespace DailyStepTracker.BL.Controller
                     
                     else if (System.Text.Json.JsonSerializer.Deserialize<Eating>(jsonData) is Eating element)
                     {
-                        // Возможно здесь БЫЛА ошибка: постоянно получали уже записанный прием пищи,
+                        // Возможно здесь ошибка: постоянно получаем уже записанный прием пищи,
                         // но возможно этот прием пищи был от другого пользователя
                         // Исправление?:
                         if (element.User == User)

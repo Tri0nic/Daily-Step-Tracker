@@ -16,12 +16,16 @@ namespace DailyStepTracker.BL.Controller
         /// Получение списка пользователей из файла
         /// </summary>
         /// <returns>Список пользователей</returns>
+        //protected T GetObject(params object[] args)
+        //{
+        //    return (T)Activator.CreateInstance(typeof(T), args);
+        //}
         protected T GetItems<T>(string fileName) where T : new()
         {
             try
             {
-                // Если файл создан и содержит T, то десериализуем его и возвращаем
-                // Если нет, то возвращаем пустую T
+                // Если файл UsersData создан и содержит List<User>, то десериализуем его и возвращаем
+                // Если нет, то возвращаем пустой список
                 using (var file = new StreamReader(fileName))
                 {
                     string jsonData = file.ReadToEnd();
@@ -63,5 +67,39 @@ namespace DailyStepTracker.BL.Controller
                 file.Write(jsonString);
             }
         }
+
+
+        /////////////////////
+        ///
+
+
+        //protected void Save(string fileName, object element)
+        //{
+        //    var formatter = new BinaryFormatter();
+        //
+        //    using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
+        //    {
+        //        formatter.Serialize(fs, element);
+        //    }
+        //}
+        //
+        //protected T GetItems<T>(string fileName)
+        //{
+        //    var formatter = new BinaryFormatter();
+        //
+        //    using (var fs = new FileStream(fileName, FileMode.OpenOrCreate))
+        //    {
+        //        if (fs.Length > 0 && formatter.Deserialize(fs) is T items)
+        //        {
+        //            return items;
+        //        }
+        //        else
+        //        {
+        //            return default(T);
+        //        }
+        //    }
+        //}
+
+
     }
 }

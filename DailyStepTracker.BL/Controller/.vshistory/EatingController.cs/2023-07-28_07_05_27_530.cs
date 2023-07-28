@@ -69,7 +69,7 @@ namespace DailyStepTracker.BL.Controller
         }
         public Eating GetEating()
         {
-            // Десериализации Eating и его свойства Products
+            // десериализации Eating и его свойства Products
             Dictionary<Food, int> productsDeserialized;
             using (var file = new StreamReader(ProductsFileName))
             {
@@ -79,7 +79,6 @@ namespace DailyStepTracker.BL.Controller
                 {
                     productsDeserialized = new Dictionary<Food, int>();
                 }
-                // Десериализация словаря с пользовательским классом с помощью List
                 else if (JsonConvert.DeserializeObject<List<KeyValuePair<Food, int>>>(jsonData).ToDictionary(kv => kv.Key, kv => kv.Value) is Dictionary<Food, int> foodDict)
                 {
                     productsDeserialized = foodDict;
@@ -100,20 +99,9 @@ namespace DailyStepTracker.BL.Controller
                     {
                         eating = new Eating(User);
                     }
-                    
                     else if (System.Text.Json.JsonSerializer.Deserialize<Eating>(jsonData) is Eating element)
                     {
-                        // Возможно здесь БЫЛА ошибка: постоянно получали уже записанный прием пищи,
-                        // но возможно этот прием пищи был от другого пользователя
-                        // Исправление?:
-                        if (element.User == User)
-                        {
-                            eating = element;
-                        }
-                        else
-                        {
-                            eating = new Eating(User);
-                        }
+                        eating = element;
                     }
                     else
                     {

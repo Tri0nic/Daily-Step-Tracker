@@ -61,7 +61,6 @@ namespace DailyStepTracker.BL.Controller
             User = user;
             Foods = GetFood();
             Eating = GetEating();
-            Save();
         }
         public List<Food> GetFood()
         {
@@ -69,63 +68,36 @@ namespace DailyStepTracker.BL.Controller
         }
         public Eating GetEating()
         {
-            // Десериализации Eating и его свойства Products
+            // десериализации Eating и его свойства Products
             Dictionary<Food, int> productsDeserialized;
-            using (var file = new StreamReader(ProductsFileName))
-            {
-                string jsonData = file.ReadToEnd();
-            
-                if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
-                {
-                    productsDeserialized = new Dictionary<Food, int>();
-                }
-                // Десериализация словаря с пользовательским классом с помощью List
-                else if (JsonConvert.DeserializeObject<List<KeyValuePair<Food, int>>>(jsonData).ToDictionary(kv => kv.Key, kv => kv.Value) is Dictionary<Food, int> foodDict)
-                {
-                    productsDeserialized = foodDict;
-                }
-                else
-                {
-                    productsDeserialized = new Dictionary<Food, int>();
-                }
-            }
-            Eating eating;
-            try
-            {
-                using (var file = new StreamReader(EatingFileName))
+            //try
+            //{
+                using (var file = new StreamReader(ProductsFileName))
                 {
                     string jsonData = file.ReadToEnd();
-
+            
                     if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
                     {
-                        eating = new Eating(User);
+                        productsDeserialized = new Dictionary<Food, int>();
                     }
-                    
-                    else if (System.Text.Json.JsonSerializer.Deserialize<Eating>(jsonData) is Eating element)
+                    if (JsonConvert.DeserializeObject<List<KeyValuePair<Food, int>>>(jsonData)
+                    .ToDictionary(kv => kv.Key, kv => kv.Value) is Dictionary<Food, int> foodDict)
                     {
-                        // Возможно здесь БЫЛА ошибка: постоянно получали уже записанный прием пищи,
-                        // но возможно этот прием пищи был от другого пользователя
-                        // Исправление?:
-                        if (element.User == User)
-                        {
-                            eating = element;
-                        }
-                        else
-                        {
-                            eating = new Eating(User);
-                        }
+                        productsDeserialized = foodDict;
                     }
                     else
                     {
-                        eating = new Eating(User);
+                        productsDeserialized = new Dictionary<Food, int>();
                     }
                 }
-            }
-            catch (System.IO.FileNotFoundException) // Если файла не существует
-            {
-                eating = new Eating(User);
-            }
+            //}
+            //catch (System.IO.FileNotFoundException) // Если файла не существует
+            //{
+            //    return new T();
+            //}
+            Eating eating = GetItems<Eating>(EatingFileName) ?? new Eating(User);
             eating.Products = productsDeserialized;
+
             return eating;
         }
         private void Save()
@@ -135,20 +107,10 @@ namespace DailyStepTracker.BL.Controller
             /// !!!самостоятельно обработать его сериализацию, поскольку стандартные JSON
             /// !!!сериализаторы не знают, как сериализовать пользовательские классы по умолчанию. 
             string stringEatingProducts = JsonConvert.SerializeObject(Eating.Products.ToList());
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                StringEscapeHandling = StringEscapeHandling.Default // Отключаем Unicode-escape
-            };
-            string jsonString = JsonConvert.SerializeObject(stringEatingProducts, settings);
-            jsonString = jsonString.Replace("\\", "");
-            jsonString = jsonString.Trim('"');
-            using (var file = new StreamWriter(ProductsFileName, false))
-            {
-                file.Write(jsonString);
-            }
-            
+            Save(ProductsFileName, stringEatingProducts);
             Save(EatingFileName, Eating);
         }
+
+
     }
 }

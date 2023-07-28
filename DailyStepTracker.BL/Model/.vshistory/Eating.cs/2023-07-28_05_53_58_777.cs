@@ -29,6 +29,11 @@ namespace DailyStepTracker.BL.Model
         /// </summary>
         public User User { get; }
         #endregion
+        //public Eating() 
+        //{
+        //    DateTime = DateTime.Now;
+        //    Products = new Dictionary<Food, int>();
+        //}
         [Newtonsoft.Json.JsonConstructor]
         [System.Text.Json.Serialization.JsonConstructor]
         public Eating(User user) 

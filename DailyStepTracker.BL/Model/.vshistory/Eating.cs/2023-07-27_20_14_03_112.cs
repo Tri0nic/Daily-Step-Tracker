@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using DailyStepTracker.BL.Controller;
 
 namespace DailyStepTracker.BL.Model
 {
@@ -22,15 +21,14 @@ namespace DailyStepTracker.BL.Model
         /// <summary>
         /// Продукты
         /// </summary>
-        [JsonIgnore]
-        public Dictionary<Food, int> Products { get; set; }
+        public Dictionary<Food, int> Products { get; }
         /// <summary>
         /// Пользователь
         /// </summary>
         public User User { get; }
         #endregion
-        [Newtonsoft.Json.JsonConstructor]
-        [System.Text.Json.Serialization.JsonConstructor]
+        public Eating() { }
+        [JsonConstructor]
         public Eating(User user) 
         {
             if (user == null)

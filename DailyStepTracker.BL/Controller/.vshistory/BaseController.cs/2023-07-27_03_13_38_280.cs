@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -16,19 +15,19 @@ namespace DailyStepTracker.BL.Controller
         /// Получение списка пользователей из файла
         /// </summary>
         /// <returns>Список пользователей</returns>
-        protected T GetItems<T>(string fileName) where T : new()
+        protected T GetItems<T>(string fileName)
         {
             try
             {
-                // Если файл создан и содержит T, то десериализуем его и возвращаем
-                // Если нет, то возвращаем пустую T
-                using (var file = new StreamReader(fileName))
+                // Если файл UsersData создан и содержит List<User>, то десериализуем его и возвращаем
+                // Если нет, то возвращаем пустой список
+                using (var file = new StreamReader("UsersData.json"))
                 {
                     string jsonData = file.ReadToEnd();
-        
+
                     if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
                     {
-                        return new T();
+                        return default(T);
                     }
                     if (JsonSerializer.Deserialize<T>(jsonData) is T element)
                     {
@@ -36,13 +35,13 @@ namespace DailyStepTracker.BL.Controller
                     }
                     else
                     {
-                        return new T();
+                        return default(T);
                     }
                 }
             }
             catch (System.IO.FileNotFoundException) // Если файла не существует
             {
-                return new T();
+                return default(T);
             }
         }
 

@@ -35,7 +35,6 @@ namespace DailyStepTracker.BL.Model
         
         public Food(string name) : this(name, 0, 0, 0, 0) { }
         [Newtonsoft.Json.JsonConstructor]
-        [System.Text.Json.Serialization.JsonConstructor]
         public Food(string name, double fats, double proteins, double carbohydrates, double calories)
         {
             // TODO: ПРОВЕРКА

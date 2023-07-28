@@ -5,21 +5,9 @@ namespace DailyStepTracker.BL.Controller
 {
     public class UserController : BaseController
     {
-        /// <summary>
-        /// Название JSON файла
-        /// </summary>
-        private const string FileName = "UsersData.json";
-        /// <summary>
-        /// Список пользователей
-        /// </summary>
+
         public List<User> Users { get; }
-        /// <summary>
-        /// Пользователь
-        /// </summary>
         public User User { get; }
-        /// <summary>
-        /// Указатель новизны пользователя
-        /// </summary>
         public bool IsNewUser { get; }
 
         /// <summary>
@@ -74,14 +62,14 @@ namespace DailyStepTracker.BL.Controller
         /// <returns>Список пользователей</returns>
         private List<User> GetUsers()
         {
-            return GetItems<List<User>>(FileName);
+            return GetUsers<List<User>>("UsersData.json");
         }
         /// <summary>
         /// Сохранение пользователей в JSON
         /// </summary>
         private void Save()
         {
-            Save(FileName, Users);
+            Save("UsersData.json", Users);
         }
     }
 }

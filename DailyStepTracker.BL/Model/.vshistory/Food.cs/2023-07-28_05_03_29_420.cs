@@ -14,6 +14,7 @@ namespace DailyStepTracker.BL.Model
         /// <summary>
         /// Название продукта
         /// </summary>
+        [JsonProperty("Name")]
         public string Name { get; }
         /// <summary>
         /// Жиры
@@ -34,8 +35,7 @@ namespace DailyStepTracker.BL.Model
         #endregion
         
         public Food(string name) : this(name, 0, 0, 0, 0) { }
-        [Newtonsoft.Json.JsonConstructor]
-        [System.Text.Json.Serialization.JsonConstructor]
+        [JsonConstructor]
         public Food(string name, double fats, double proteins, double carbohydrates, double calories)
         {
             // TODO: ПРОВЕРКА

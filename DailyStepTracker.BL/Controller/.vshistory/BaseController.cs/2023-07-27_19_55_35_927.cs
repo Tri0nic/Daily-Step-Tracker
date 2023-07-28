@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -20,12 +19,12 @@ namespace DailyStepTracker.BL.Controller
         {
             try
             {
-                // Если файл создан и содержит T, то десериализуем его и возвращаем
-                // Если нет, то возвращаем пустую T
+                // Если файл UsersData создан и содержит List<User>, то десериализуем его и возвращаем
+                // Если нет, то возвращаем пустой список
                 using (var file = new StreamReader(fileName))
                 {
                     string jsonData = file.ReadToEnd();
-        
+
                     if (string.IsNullOrWhiteSpace(jsonData)) // Если файл окажется пустым
                     {
                         return new T();
